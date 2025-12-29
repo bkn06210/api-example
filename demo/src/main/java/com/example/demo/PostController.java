@@ -22,8 +22,20 @@ public class PostController {
 
     // 1. 게시글 전체 조회
     @GetMapping("/posts")
-    public List<PostDto> getPosts() {
-        return postList;
+    public List<Map<String, Object>> getPosts() {
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (PostDto post : postList) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("id", post.getId());
+            map.put("title", post.getTitle());
+            map.put("content", post.getContent());
+            map.put("create_date", post.getCreate_date());
+            
+
+            result.add(map);
+        }
+        return result;
     }
 
     // 2. 게시글 작성 (날짜 자동 등록)
@@ -45,7 +57,15 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> getPostById(@PathVariable Long postId) {
         for (PostDto post : postList) {
-            if (post.getId().equals(postId)) return ResponseEntity.ok(post);
+            if (post.getId().equals(postId)) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("id", post.getId());
+                response.put("title", post.getTitle());
+                response.put("content", post.getContent());
+                response.put("create_date", post.getCreate_date());
+
+                return ResponseEntity.ok(response);
+            }
         }
         return getErrorResponse();
     }
